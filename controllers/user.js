@@ -49,7 +49,7 @@ exports.edit = async (req, res, next) => {
         }
         else {
             const user = new User(req.body);
-            const updatedProduct = await User.findByIdAndUpdate(req.params.id, user);
+            const updatedUser = await User.findByIdAndUpdate(req.params.id, user);
             await res.json({updatedUser});
         }
     } catch (error) {
