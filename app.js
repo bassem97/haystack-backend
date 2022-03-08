@@ -9,6 +9,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use('/', indexRouter);
+
 
 mongoose.connect(
         'mongodb+srv://haystack:haystack@cluster0.bwzed.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {useUnifiedTopology: true ,  useNewUrlParser: true }
@@ -18,5 +20,3 @@ mongoose.connect(
         console.log("Running !")
     })
     .catch(err => console.log(err));
-app.use('/', indexRouter);
-app.listen(8000);
