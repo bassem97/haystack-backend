@@ -8,6 +8,7 @@ const indexRouter = require('./routes/index');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 mongoose.connect(
@@ -19,4 +20,11 @@ mongoose.connect(
     })
     .catch(err => console.log(err));
 app.use('/', indexRouter);
+
+
+
+
+
+
+
 app.listen(8000);
