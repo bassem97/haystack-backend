@@ -25,9 +25,12 @@ app.post('/uploads', multipartMiddleware, (req, res) => {
 });
 
 app.use('/files', express.static('files'));
-app.get('/files/:name', function (req, res, next) {
+app.get('/files/:name', async (req, res, next) => {
     const fileName = req.params.name;
-    res.sendFile(fileName, function (err) {console.log(err)}); });
+    await res.sendFile(fileName, function (err) {
+        console.log(err)
+    });
+});
 
 
 mongoose.connect(
