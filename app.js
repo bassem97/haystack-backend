@@ -34,10 +34,12 @@ app.get('/files/:name', async (req, res, next) => {
 
 
 mongoose.connect(
-        'mongodb+srv://haystack:haystack@cluster0.bwzed.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {useUnifiedTopology: true ,  useNewUrlParser: true }
-    )
+    //'mongodb+srv://haystack:haystack@cluster0.bwzed.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+    'mongodb+srv://haystack:haystack@haystack.0ialh.mongodb.net/haystack?retryWrites=true&w=majority',
+    {useUnifiedTopology: true ,  useNewUrlParser: true }
+)
     .then(result => {
         app.listen(8080);
-        console.log("Running !")
+        console.log("Running on 8080 !")
     })
     .catch(err => console.log(err));

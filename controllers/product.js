@@ -63,6 +63,7 @@ exports.edit = async (req, res, next) => {
 exports.remove = async (req, res, next) =>  {
     try {
         Product.deleteOne(req.params.id);
+        await res.status(200).json("Product deleted");
     } catch (error) {
         console.log(error.message);
         await res.json({
