@@ -26,9 +26,20 @@ const productSchema = new Schema(
         optional_images: [
             {
                 type: String,
-            },
+                validate: {
+                    validator: function (v, x, z) {
+                        return !(this.optional_images.length > 3);
+                    },
+                }
+            }
         ],
-        category: {type: Schema.Types.ObjectID, ref: 'Category'},
+        size: { type: String },
+        color: { type: String },
+
+        categories: [
+            {type: Schema.Types.ObjectID, ref: 'Category'}
+        ],
+
         owner: {type: Schema.Types.ObjectID, ref: 'User'},
     },
     {timestamps: true}
