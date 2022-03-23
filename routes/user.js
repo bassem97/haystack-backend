@@ -1,23 +1,23 @@
 const express = require('express');
 const productController = require('../controllers/product');
 const userController = require('../controllers/user');
+const passport = require("passport");
 const router = express.Router();
 
+
 router.route('/')
-    .get(userController.list)
+    .get(userController.getUsers)
 
 router.route('/:id')
-    .get(userController.get)
-    .put(userController.edit)
-    .delete(userController.remove);
+    .get(userController.getUser)
+    .put(userController.updateUser)
+    .delete(userController.deleteUser);
 
-router.route('/signup')
-    .post(userController.signUp)
-    .get(userController.get)
-    // .delete(userController.delete);
 
-router.route('/create')
-    .post(userController.create)
+
+
+// router.route('/login/google')
+//     .get(passport.authenticate('google'))
 // .delete(userController.delete);
 
 module.exports = router;

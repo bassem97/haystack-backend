@@ -3,12 +3,21 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+
+
 const indexRouter = require('./routes/index');
+const auth = require('./middlewares/auth');
 
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 
 mongoose.connect(
@@ -20,6 +29,7 @@ mongoose.connect(
     })
     .catch(err => console.log(err));
 app.use('/', indexRouter);
+
 
 
 

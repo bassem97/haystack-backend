@@ -1,3 +1,5 @@
+
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -21,6 +23,7 @@ const userSchema = new Schema(
         image:String,
         birthdate:Date,
         phone:Number,
+        googleId : String,
         refreshToken:  [Session]
     });
 

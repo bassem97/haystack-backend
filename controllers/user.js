@@ -1,122 +1,148 @@
 const User = require('../models/user');
-const {getToken, COOKIE_OPTIONS, getRefreshToken} = require("../middlewares/authenticate")
-const express = require("express");
-const bodyParser = require("body-parser");
-
-const app = express();
+const bcrypt = require('bcryptjs');
+const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 
-exports.list = async (req, res, next) => {
-    const users = await User.find();
-    await res.json({
-        users
-    });
+exports.getUsers = async (req, res, next) => {
+    console.log(req);
+    if (!req.isAuth) {
+        await res.json({
+            error: "Not Auth"
+        });
+    }else{
+        const users = await User.find();
+        await res.json({
+            users
+        });
+    }
+
 };
 
-exports.get = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
     if (!req.params.id) {
         res.json({
             error: "Id Not Found"
         });
-    } else {
+    }
+    else {
         const user = await User.findById(req.params.id);
+        if (!user) {
+            res.json({
+                error: "user Not Found"
+            });
+        }
+        else {
+            res.json({
+                user
+            });
+        }
+    }
+};
+
+
+exports.updateUser = async (req, res, next) => {
+    if (!req.userId) {
+        await res.json({
+            error: "Not Auth"
+        });
+    }
+    else {
+        const user = await User.findById(req.userId);
         if (!user) {
             await res.json({
                 error: "user Not Found"
             });
-        } else {
-            await res.json({
-                user: user
-            });
         }
-    }
-};
-
-exports.create = async (req, res) => {
-    try {
-        console.log(req)
-        const user = new User(req.body);
-        await user.save();
-        await res.json({product: user});
-    } catch (error) {
-        await res.json({
-            error: "CONFLICT !"
-        });
-    }
-};
-
-exports.edit = async (req, res, next) => {
-    try {
-        if (!req.params.id) {
-            res.json({
-                error: "Id Not Found"
-            });
-        } else {
+        else {
             const user = new User(req.body);
-            const updatedUser = await User.findByIdAndUpdate(req.params.id, user);
-            await res.json({updatedUser});
+            user.password = await bcrypt.hash(req.body.password, 12);
+
+            await user.save();
+
+            await res.json({
+                message: 'User updated successfully!',
+                user
+            });
         }
-    } catch (error) {
-        console.log(error.message);
-        await res.json({
-            error: error.message
-        });
     }
 };
 
-exports.remove = async (req, res, next) => {
-    try {
-        User.deleteOne(req.params.id);
-    } catch (error) {
-        console.log(error.message);
+exports.deleteUser = async (req, res, next) => {
+    if (!req.params.id) {
         await res.json({
-            error: error.message
+            error: "Id Not Found"
         });
+    }
+    else {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            await res.json({
+                error: "User Not Found"
+            });
+        } else {
+            user.remove();
+
+            await res.json({
+                message: "user Removed"
+            });
+        }
     }
 };
 
-exports.signUp = async (req, res, next) => {
-    // Verify that first name is not empty
-    console.log(req)
-    // if (!req.body.firstName) {
-    //     res.statusCode = 500
-    //     res.send({
-    //         name: "FirstNameError",
-    //         message: "The first name is required",
-    //     })
-    // } else {
+exports.login = async (req, res, next) => {
+    console.log("LOGIN ASBA")
+    if (!validator.isEmail(req.body.email.trim().toLowerCase())) {
+        res.json({
+            error: "Email not valid"
+        })
+    }
+    const user = await User.findOne({email: req.body.email.trim().toLowerCase()});
+    if (!user) {
+        await res.json({
+            error: "user Not Found"
+        })
+    }
+    const isEqual = await bcrypt.compare(req.body.password, user.password);
+    if (!isEqual) {
+        await res.json({
+            error: "Password Incorrect"
+        })
+    }
+    else {
+        const token = await jwt.sign(
+            {
+                userId: user._id.toString(),
+                email: user.email
+            },
+            'haystack',
+        );
 
-    User.register(
-        new User({
-            username: req.body.username,
-            password: req.body.password,
-            email: req.body.email,
-            firstName: req.body.firstName || "",
-            lastName: req.body.lastName || "",
-        }),
-        req.body.password,
-        (err, user) => {
-            if (err) {
-                res.statusCode = 500
-                res.send(err)
-            } else {
-                user.firstName = req.body.firstName
-                user.lastName = req.body.lastName || ""
-                const token = getToken({_id: user._id})
-                const refreshToken = getRefreshToken({_id: user._id})
-                user.refreshToken.push({refreshToken})
-                user.save((err, user) => {
-                    if (err) {
-                        res.statusCode = 500
-                        res.send(err)
-                    } else {
-                        res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-                        res.send({success: true, token})
-                    }
-                })
-            }
-        }
-    )
-}
+        await res.json({
+            token: token,
+            userId: user._id.toString(),
+            role: 'User'
+        });
+    }
+
+};
+
+exports.createUser = async (req, res, next) => {
+    if (!validator.isEmail(req.body.email.trim().toLowerCase())) {
+        res.json({
+            error: "Email not valid"
+        })
+    }
+    console.log(req.body);
+    const user = new User(req.body);
+    user.email = req.body.email.trim().toLowerCase();
+    user.password = await bcrypt.hash(req.body.password, 12);
+    await user.save();
+    await res.json({
+        message: 'User created successfully!',
+        user
+    });
+};
+
 
 
