@@ -1,11 +1,16 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const productRoutes = require('./product');
+const authRoutes = require("./auth");
+const userRoutes = require("./user");
 const categoryRoutes = require('./category');
 
 
 
 router.use('/products', productRoutes);
+router.use('/user', userRoutes);
+router.use("/auth", authRoutes);
+
+
 router.use('/category', categoryRoutes);
 
 /* GET home page. */
