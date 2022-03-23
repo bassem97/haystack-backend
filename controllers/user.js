@@ -102,28 +102,31 @@ exports.login = async (req, res, next) => {
         await res.json({
             error: "user Not Found"
         })
-    }
-    const isEqual = await bcrypt.compare(req.body.password, user.password);
-    if (!isEqual) {
-        await res.json({
-            error: "Password Incorrect"
-        })
-    }
-    else {
-        const token = await jwt.sign(
-            {
-                userId: user._id.toString(),
-                email: user.email
-            },
-            'haystack',
-        );
+    }else {
 
-        await res.json({
-            token: token,
-            userId: user._id.toString(),
-            role: 'User'
-        });
+        const isEqual = await bcrypt.compare(req.body.password, user.password);
+        if (!isEqual) {
+            await res.json({
+                error: "Password Incorrect"
+            })
+        }
+        else {
+            const token = await jwt.sign(
+                {
+                    userId: user._id.toString(),
+                    email: user.email
+                },
+                'haystack',
+            );
+
+            await res.json({
+                token: token,
+                userId: user._id.toString(),
+                role: 'User'
+            });
+        }
     }
+
 
 };
 
