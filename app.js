@@ -35,9 +35,10 @@ app.post('/uploads', multipartMiddleware, (req, res) => {
 app.use('/files', express.static('files'));
 app.get('/files/:name', async (req, res, next) => {
     const fileName = req.params.name;
-    await res.sendFile(fileName, function (err) {
-        console.log(err)
-    });
+    await res.sendFile(fileName,
+        {root : __dirname},
+        (error)=> console.log(error));
+
 });
 
 
