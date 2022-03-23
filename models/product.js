@@ -33,7 +33,13 @@ const productSchema = new Schema(
                 }
             }
         ],
-        category: {type: Schema.Types.ObjectID, ref: 'Category'},
+        size: { type: String },
+        color: { type: String },
+
+        categories: [
+            {type: Schema.Types.ObjectID, ref: 'Category'}
+        ],
+
         owner: {type: Schema.Types.ObjectID, ref: 'User'},
     },
     {timestamps: true}

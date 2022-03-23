@@ -1,9 +1,9 @@
-const Product = require('../models/product');
+const Category = require('../models/category');
 
 exports.list = async (req, res, next) => {
-    const products = await Product.find();
+    const categories = await Category.find();
     await res.json({
-        products
+        categories
     });
 };
 
@@ -14,15 +14,15 @@ exports.get = async (req, res, next) => {
         });
     }
     else {
-        const product = await Product.findById(req.params.id);
-        if (!product) {
+        const category = await Category.findById(req.params.id);
+        if (!category) {
             await res.json({
-                error: "product Not Found"
+                error: "category Not Found"
             });
         }
         else {
             await res.json({
-                product
+                category
             });
         }
     }
@@ -30,9 +30,9 @@ exports.get = async (req, res, next) => {
 
 exports.create = async (req, res) => {
     try {
-        const product = new Product(req.body);
-        await product.save();
-        await res.json({product});
+        const category = new Category(req.body);
+        await category.save();
+        await res.json({category});
     } catch (error) {
         await res.json({
             error: "CONFLICT !"
@@ -48,9 +48,9 @@ exports.edit = async (req, res, next) => {
             });
         }
         else {
-            const product = new Product(req.body);
-            const updatedProduct = await Product.findByIdAndUpdate(req.params.id, product);
-            await res.json({updatedProduct});
+            const category = new Category(req.body);
+            const updatedCategory = await Category.findByIdAndUpdate(req.params.id, category);
+            await res.json({updatedCategory});
         }
     } catch (error) {
         console.log(error.message);
@@ -62,8 +62,8 @@ exports.edit = async (req, res, next) => {
 
 exports.remove = async (req, res, next) =>  {
     try {
-        Product.deleteOne(req.params.id);
-        await res.status(200).json("Product deleted");
+        Category.deleteOne(req.params.id);
+        await res.status(200).json("Category deleted");
     } catch (error) {
         console.log(error.message);
         await res.json({

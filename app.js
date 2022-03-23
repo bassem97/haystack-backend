@@ -40,6 +40,6 @@ mongoose.connect(
     )
     .then(result => {
         app.listen(8080);
-        console.log("Running !")
+        console.log("Running on 8080 !")
     })
     .catch(err => console.log(err));
