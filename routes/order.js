@@ -63,7 +63,7 @@ router.get("/",  async (req, res) => {
     }
 });
 
-// GET MONTHLY INCOME
+// GET MONTHLY INCOMe
 
 router.get("/income",  async (req, res) => {
     const date = new Date();

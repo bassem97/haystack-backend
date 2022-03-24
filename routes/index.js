@@ -6,6 +6,7 @@ const categoryRoutes = require('./category');
 const stripeRoutes = require("./stripe");
 const orderRoutes = require("./order");
 
+
 router.use('/products', productRoutes);
 router.use('/user', userRoutes);
 router.use("/auth", authRoutes);
