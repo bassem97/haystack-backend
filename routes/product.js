@@ -6,6 +6,9 @@ router.route('/')
     .get(productController.list)
     .post(productController.create);
 
+router.route('/myproducts')
+    .get(productController.getMyProducts);
+
 router.route('/:id')
     .get(productController.get)
     .put(productController.edit)

@@ -9,18 +9,18 @@ const productSchema = new Schema(
         },
         stock:{
             type: Number,
-            required: true
+            default: 1
         },
         price:{
-            type:String,
+            type: Number,
             required: true
         },
         description:{
-            type:String,
+            type: String,
             required: true
         },
         image:{
-            type:String,
+            type: String,
             required: true
         },
         optional_images: [
