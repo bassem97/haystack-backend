@@ -17,7 +17,15 @@ const userSchema = new Schema(
         image:String,
         birthdate:Date,
         phone:Number,
+        cover : String,
+        image : String,
+        bio : String,
+        level :Number,
+        experience : Number,
+        newLevelExperience :Number,
         googleId : String,
+        followers : [],
+        products : []
     });
 
 // //Remove refreshToken from the response

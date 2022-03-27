@@ -121,7 +121,7 @@ exports.login = async (req, res, next) => {
 
             await res.json({
                 token: token,
-                userId: user._id.toString(),
+                user: user,
                 role: 'User'
             });
         }
