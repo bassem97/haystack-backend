@@ -91,7 +91,7 @@ exports.deleteUser = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-    console.log("LOGIN ASBA")
+    console.log("LOGIN")
     if (!validator.isEmail(req.body.email.trim().toLowerCase())) {
         res.json({
             error: "Email not valid"
