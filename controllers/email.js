@@ -1,5 +1,8 @@
 const nodemailer = require("nodemailer");
 const User = require("../models/user");
+const path = require("path");
+const hbs = require('nodemailer-express-handlebars')
+
 
 /*
     Here we are configuring our SMTP Server details.
@@ -15,6 +18,18 @@ const smtpTransport = nodemailer.createTransport({
 let userId,mailOptions,host,link;
 /*------------------SMTP Over-----------------------------*/
 
+// point to the template folder
+const handlebarOptions = {
+    viewEngine: {
+        partialsDir: path.resolve('./views/'),
+        defaultLayout: false,
+    },
+    viewPath: path.resolve('./views/'),
+};
+
+// use a template file with nodemailer
+smtpTransport.use('compile', hbs(handlebarOptions))
+
 
 ///send
 exports.send=async  (req,res, next)=>{
@@ -23,19 +38,25 @@ exports.send=async  (req,res, next)=>{
     host=req.get('host');
     link="http://"+req.get('host')+"/email/verify/"+userId;
     const user = await User.findById(userId);
-    console.log(user)
     mailOptions={
             to : user.email,
             // to : "bassem.jadoui@esprit.tn",
-            subject : "Please confirm your Email account",
-            html : "Hello,Please Click on the link to verify your email."+link+">Click here to verify"
+            subject : "WELCOME TO HayStack",
+            template: 'email', // the name of the template file i.e email.handlebars
+            context:{
+                name: user.firstName+" "+user.lastName,
+                company: 'HayStack',
+                link: link
+            }
+
+        // html : "Hello,Please Click on the link to verify your email."+link+">Click here to verify"
     }
     console.log(mailOptions);
-    smtpTransport.sendMail(mailOptions, function(error, response){
-        if(error){
+    await smtpTransport.sendMail(mailOptions, function (error, response) {
+        if (error) {
             console.log(error);
             res.end("error");
-        }else{
+        } else {
             console.log("Message sent: " + response.message);
             res.end("sent");
         }

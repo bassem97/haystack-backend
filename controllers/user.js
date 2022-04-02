@@ -133,35 +133,31 @@ exports.createUser = async (req, res, next) => {
         res.json({
             error: "Email not valid"
         })
-    }
-    const user = new User(req.body);
-    user.email = req.body.email.trim().toLowerCase();
-    user.password = await bcrypt.hash(req.body.password, 12);
-    user.isVerified = false;
-    await user.save()
-        .then(user => {
+    }else{
+        let  user = await User.findOne({email:req.body.email})
+        console.log(user);
+        if (user) {
             res.json({
-                message: 'User created successfully!',
-                _id : user._id
-            });
-        })
+                error: "User already exists !"
+            })
+        }else{
+            user = new User(req.body);
+            user.email = req.body.email.trim().toLowerCase();
+            user.password = await bcrypt.hash(req.body.password, 12);
+            user.isVerified = false;
+            await user.save()
+                .then(user => {
+                    res.json({
+                        message: 'User created successfully!',
+                        _id : user._id
+                    });
+                })
 
+        }
+
+    }
 };
-exports.verifyUse = async (req, res, next) => {
-        // const user = await User.findOne({ email: req.body.email });
-        // if (!user) {
-        //     await res.json({
-        //         error: "Email Not Found"
-        //     });
-        // } else {
-        //     await User.updateOne(
-        //         {email:req.params.email},
-        //         {$set:{isVerified : true}},
-        //         () => console.log("email :"+req.params.email+" is verified 1")
-        //     )
-        // }
-    // }
-};
+
 
 
 
