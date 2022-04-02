@@ -134,8 +134,7 @@ exports.createUser = async (req, res, next) => {
             error: "Email not valid"
         })
     }else{
-        let  user = await User.findOne({email:req.body.email})
-        console.log(user);
+        let  user = await User.findOne({email:req.body.email.trim().toLowerCase()})
         if (user) {
             res.json({
                 error: "User already exists !"
