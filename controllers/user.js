@@ -39,8 +39,6 @@ exports.getUser = async (req, res, next) => {
         }
     }
 };
-
-
 exports.updateUser = async (req, res, next) => {
     if (!req.userId) {
         await res.json({
@@ -67,7 +65,6 @@ exports.updateUser = async (req, res, next) => {
         }
     }
 };
-
 exports.deleteUser = async (req, res, next) => {
     if (!req.params.id) {
         await res.json({
@@ -89,7 +86,6 @@ exports.deleteUser = async (req, res, next) => {
         }
     }
 };
-
 exports.login = async (req, res, next) => {
     console.log("LOGIN")
     if (!validator.isEmail(req.body.email.trim().toLowerCase())) {
@@ -100,51 +96,71 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({email: req.body.email.trim().toLowerCase()});
     if (!user) {
         await res.json({
-            error: "user Not Found"
+            error: "Cannot find user"
         })
     }else {
-
-        const isEqual = await bcrypt.compare(req.body.password, user.password);
-        if (!isEqual) {
+        if (!user.isVerified) {
             await res.json({
-                error: "Password Incorrect"
+                error: "Please check your email to verify your account !"
             })
-        }
-        else {
-            const token = await jwt.sign(
-                {
-                    userId: user._id.toString(),
-                    email: user.email
-                },
-                'haystack',
-            );
+        } else {
+            const isEqual = await bcrypt.compare(req.body.password, user.password);
+            if (!isEqual) {
+                await res.json({
+                    error: "Password Incorrect"
+                })
+            } else {
+                const token = await jwt.sign(
+                    {
+                        userId: user._id.toString(),
+                        email: user.email
+                    },
+                    'haystack',
+                );
 
-            await res.json({
-                token: token,
-                user: user,
-                role: 'User'
-            });
+                await res.json({
+                    token: token,
+                    user: user,
+                    role: 'User'
+                });
+            }
         }
+
     }
-
-
 };
-
 exports.createUser = async (req, res, next) => {
     if (!validator.isEmail(req.body.email.trim().toLowerCase())) {
         res.json({
             error: "Email not valid"
         })
     }
-    console.log(req.body);
     const user = new User(req.body);
     user.email = req.body.email.trim().toLowerCase();
     user.password = await bcrypt.hash(req.body.password, 12);
-    await user.save();
-    await res.json({
-        message: 'User created successfully!',
-        user
-    });
+    user.isVerified = false;
+    await user.save()
+        .then(user => {
+            res.json({
+                message: 'User created successfully!',
+                _id : user._id
+            });
+        })
+
+};
+exports.verifyUse = async (req, res, next) => {
+        // const user = await User.findOne({ email: req.body.email });
+        // if (!user) {
+        //     await res.json({
+        //         error: "Email Not Found"
+        //     });
+        // } else {
+        //     await User.updateOne(
+        //         {email:req.params.email},
+        //         {$set:{isVerified : true}},
+        //         () => console.log("email :"+req.params.email+" is verified 1")
+        //     )
+        // }
+    // }
 };
 
 

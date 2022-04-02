@@ -9,23 +9,24 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
     {
-        firstName: String,
-        lastName:String,
-        username:String,
-        email:String,
-        password:String,
-        image:String,
-        birthdate:Date,
-        phone:Number,
-        cover : String,
-        image : String,
-        bio : String,
-        level :Number,
-        experience : Number,
-        newLevelExperience :Number,
-        googleId : String,
-        followers : [],
-        products : []
+            firstName: String,
+            lastName:String,
+            username:String,
+            email:String,
+            password:String,
+            image:String,
+            birthdate:Date,
+            phone:Number,
+            cover : String,
+            image : String,
+            bio : String,
+            isVerified : Boolean,
+            level :Number,
+            experience : Number,
+            newLevelExperience :Number,
+            googleId : String,
+            followers : [],
+            products : []
     });
 
 // //Remove refreshToken from the response

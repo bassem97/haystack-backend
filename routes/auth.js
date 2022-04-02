@@ -14,7 +14,6 @@ router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: 'http://localhost:8080/login/failed' }),
     function(req, res) {
       // Successful authentication, redirect home.
-      console.log("3ASBAAA khedmet")
       res.redirect('http://localhost:8080/');
     });
 
