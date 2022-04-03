@@ -15,7 +15,7 @@ const smtpTransport = nodemailer.createTransport({
         pass: "HayStack.Placeholder@2022"
     }
 });
-let userId,mailOptions,host,link;
+let userId,mailOptions,host,link,passwordLink;
 /*------------------SMTP Over-----------------------------*/
 
 // point to the template folder
@@ -51,13 +51,10 @@ exports.send=async  (req,res, next)=>{
 
         // html : "Hello,Please Click on the link to verify your email."+link+">Click here to verify"
     }
-    console.log(mailOptions);
     await smtpTransport.sendMail(mailOptions, function (error, response) {
         if (error) {
-            console.log(error);
             res.end("error");
         } else {
-            console.log("Message sent: " + response.message);
             res.end("sent");
         }
     });
@@ -78,7 +75,6 @@ exports.verify=async  (req,res, next)=>{
                 () => console.log("email :"+req.params.email+" is verified 1")
             )
 
-            console.log("email is verified");
 
             // res.send("Email "+req.params.email+" is been Successfully verified");
             res.redirect("http://localhost:3000/login/verified");
@@ -86,7 +82,6 @@ exports.verify=async  (req,res, next)=>{
         }
         else
         {
-            console.log("email is not verified");
             res.end("Bad Request");
         }
     }
@@ -95,4 +90,33 @@ exports.verify=async  (req,res, next)=>{
         res.end("Request is from unknown source");
     }
 };
+
+exports.resetPassword = async (req,res,next) =>{
+    const email = req.body.email
+    const user = await User.findOne({email: email});
+    if(!user){
+        res.end("Cannot find user with this email !")
+    }else{
+        host=req.get('host');
+        passwordLink="http://localhost:3000/password-recovery/"+user._id;
+        mailOptions={
+            to : email,
+            // to : "bassem.jadoui@esprit.tn",
+            subject : "HayStack password recovery mail bot",
+            template: 'passwordRecovery', // the name of the template file i.e email.handlebars
+            context:{
+                link : passwordLink,
+                name: user.firstName+" "+user.lastName
+            }
+        }
+        await smtpTransport.sendMail(mailOptions, function (error, response) {
+            if (error) {
+                console.log(error);
+                res.end("error");
+            } else {
+                res.end("sent");
+            }
+        });
+    }
+}
 
