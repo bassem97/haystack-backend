@@ -87,7 +87,6 @@ exports.deleteUser = async (req, res, next) => {
     }
 };
 exports.login = async (req, res, next) => {
-    console.log("LOGIN")
     if (!validator.isEmail(req.body.email.trim().toLowerCase())) {
         res.json({
             error: "Email not valid"
@@ -156,6 +155,36 @@ exports.createUser = async (req, res, next) => {
 
     }
 };
+
+exports.changePassword = async (req, res) => {
+    if (!req.params.id) {
+        await res.json({
+            error: "Id Not Found !!"
+        });
+    }else{
+        const user = await User.findById(req.params.id);
+        if(!user){
+            await res.json({
+                error: "User Not Found !!"
+            });
+        }else{
+            const password = await bcrypt.hash(req.body.password, 12);
+            try {
+                await User.updateOne(
+                    {_id:user._id},
+                    {$set:{password : password}}
+                )
+                res.end("Password modified successfully!");
+            }catch (e) {
+                res.end(e);
+            }
+
+        }
+    }
+
+
+
+}
 
 
 
