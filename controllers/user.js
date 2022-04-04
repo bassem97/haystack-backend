@@ -140,6 +140,9 @@ exports.createUser = async (req, res, next) => {
             })
         }else{
             user = new User(req.body);
+            user.level = 0
+            user.experience = 0
+            user.newLevelExperience = 0
             user.email = req.body.email.trim().toLowerCase();
             user.password = await bcrypt.hash(req.body.password, 12);
             user.isVerified = false;
