@@ -21,9 +21,18 @@ const userSchema = new Schema(
             image : String,
             bio : String,
             isVerified : Boolean,
-            level :Number,
-            experience : Number,
-            newLevelExperience :Number,
+            level : {
+                Number,
+                default: 0
+            },
+            experience : {
+                Number,
+                default: 0
+            },
+            newLevelExperience :{
+                Number,
+                default: 0
+            },
             googleId : String,
             followers : [],
             products : []
