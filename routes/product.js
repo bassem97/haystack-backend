@@ -6,7 +6,7 @@ router.route('/')
     .get(productController.list)
     .post(productController.create);
 
-router.route('/user/:id')
+router.route('/owner/:id')
     .get(productController.getByUser);
 
 router.route('/myproducts')
