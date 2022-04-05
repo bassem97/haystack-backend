@@ -18,7 +18,6 @@ const userSchema = new Schema(
             birthdate:Date,
             phone:Number,
             cover : String,
-            image : String,
             bio : String,
             isVerified : Boolean,
             level : {
@@ -34,8 +33,8 @@ const userSchema = new Schema(
                 default: 0
             },
             googleId : String,
-            followers : [],
-            products : []
+            followers : [{type: Schema.Types.ObjectID, ref: 'User'}],
+            products : [{type: Schema.Types.ObjectID, ref: 'Product'}]
     });
 
 // //Remove refreshToken from the response
