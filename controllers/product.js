@@ -10,7 +10,6 @@ exports.list = async (req, res, next) => {
 
 exports.getByUser = async (req, res, next) => {
     const products = await Product.find({owner: req.params.id});
-    console.log(products);
     await res.json({
         products
     });
