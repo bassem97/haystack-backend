@@ -8,6 +8,14 @@ exports.list = async (req, res, next) => {
     });
 };
 
+exports.getByUser = async (req, res, next) => {
+    const products = await Product.find({owner: req.params.id});
+    console.log(products);
+    await res.json({
+        products
+    });
+};
+
 exports.get = async (req, res, next) => {
     if (!req.params.id) {
         res.json({
