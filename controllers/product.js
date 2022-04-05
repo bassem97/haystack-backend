@@ -80,6 +80,7 @@ exports.edit = async (req, res, next) => {
         }
         else {
             const product = new Product(req.body);
+            product._id = req.params.id;
             const updatedProduct = await Product.findByIdAndUpdate(req.params.id, product);
             await res.json({updatedProduct});
         }
