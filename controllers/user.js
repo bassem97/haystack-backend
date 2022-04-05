@@ -40,31 +40,32 @@ exports.getUser = async (req, res, next) => {
     }
 };
 exports.updateUser = async (req, res, next) => {
-    if (!req.userId) {
-        await res.json({
-            error: "Not Auth"
+    let user = await User.findById(req.body._id).exec()
+    if (!user) {
+        await res.status(404).json({
+            error: "user not found"
         });
     }
     else {
-        const user = await User.findById(req.userId);
-        if (!user) {
-            await res.json({
-                error: "user Not Found"
-            });
-        }
-        else {
-            const user = new User(req.body);
-            user.password = await bcrypt.hash(req.body.password, 12);
+        let updatedUser = {...user.toObject(), ...req.body}
 
-            await user.save();
-
-            await res.json({
-                message: 'User updated successfully!',
-                user
-            });
+        if(updatedUser.password != ''){
+            if(await bcrypt.compare(req.body.password, user.password)){
+                updatedUser.password = await bcrypt.hash(updatedUser.newPassword, 12);
+                delete updatedUser['newPassword']
+            }
+            else
+                return res.status(403).json({error: "wrong password"})
         }
+        else{
+            delete updatedUser['password']
+            delete updatedUser['newPassword']
+        }
+        await User.findByIdAndUpdate(updatedUser._id, updatedUser).exec()
+        res.json({message: 'Your profile is updated successfully!'})
     }
 };
+
 exports.deleteUser = async (req, res, next) => {
     if (!req.params.id) {
         await res.json({
