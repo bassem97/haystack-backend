@@ -50,17 +50,20 @@ exports.getMyProducts = async (req, res, next) => {
 };
 
 exports.create = async (req, res) => {
-   /* if (!req.isAuth) {
+    if (!req.isAuth) {
         await res.json({
             error: "Not Auth"
         });
     }
-    else {*/
+    else {
         try {
             const product = new Product(req.body);
             console.log(product)
-            //product.owner = req.userId;
+            product.owner = req.userId;
             await product.save();
+            const user = await User.findById(req.userId);
+            await user.products.push(product._id);
+            await user.save();
             await res.json({product});
         } catch (error) {
             console.log(error.message);
@@ -68,7 +71,7 @@ exports.create = async (req, res) => {
                 error: error.message
             });
         }
-    //}
+    }
 };
 
 exports.edit = async (req, res, next) => {
