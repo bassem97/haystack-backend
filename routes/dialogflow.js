@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const structjson = require('./structjson.js');
+require('./structjson.js'); 
 const dialogflow = require('dialogflow');
 const uuid = require('uuid');
 
